@@ -18,14 +18,18 @@
   "author": "rahisi",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2",
+    "africastalking": "^0.7.4",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0",
     "eslint": "^9.9.0",
     "jest": "^29.7.0",
+    "nodemon": "^3.1.0",
     "supertest": "^6.3.4"
   }
 }
