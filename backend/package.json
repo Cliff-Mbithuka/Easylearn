@@ -1,14 +1,12 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "EasyLearn backend API",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "lint": "eslint .",
-    "test": "jest --passWithNoTests"
-  },
+  "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+},
   "keywords": [
     "node",
     "express",
