@@ -17,10 +17,19 @@
   "license": "ISC",
   "dependencies": {
     "africastalking": "^0.7.4",
+<<<<<<< HEAD
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.19.2",
     "sqlite3": "^5.1.7"
+=======
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
+>>>>>>> 26c982c3d343bfef2c27372b13fd2e3f39553a8c
   },
   "devDependencies": {
     "eslint": "^9.9.0",
