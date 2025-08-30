@@ -1,38 +1,53 @@
 const axios = require('axios');
 const logger = require('winston');
 
+const GEMINI_API_KEY = 'AIzaSyBKi8uNdAWP0-u15J_lRzW4A4YMozRW7tc';
+
 const generateQuestion = async () => {
     const randomSeed = Math.floor(Math.random() * 1000) + 1;
-    const num1 = Math.floor(Math.random() * 401) + 100; // 100 to 500
-    const num2 = Math.floor(Math.random() * 151) + 50;  // 50 to 200
-    const operation = Math.random() < 0.5 ? '+' : '-';
-    const expression = `${num1} ${operation} ${num2}`;
-
-    const contexts = [
-        `A farmer has ${num1} mangoes and ${operation === '+' ? 'adds' : 'sells'} ${num2}. How many mangoes are left?`,
-        `A shopkeeper buys ${num1} pencils and ${operation === '+' ? 'buys more' : 'gives away'} ${num2}. How many pencils remain?`,
-        `A student travels ${num1} km and then ${operation === '+' ? 'continues for' : 'returns'} ${num2} km. What is the total distance?`,
-        `A school has ${num1} books and ${operation === '+' ? 'receives' : 'donates'} ${num2}. How many books are there now?`
-    ];
-    const questionText = contexts[Math.floor(Math.random() * contexts.length)];
+    const prompt = `Generate a unique Grade 4 Math question (Kenyan curriculum, addition/subtraction). ` +
+                   `Use a varied context (e.g., shopping, farming, travel, school) and ensure the question is distinct (seed: ${randomSeed}). ` +
+                   `Provide a multiple-choice question with 4 options and correct answer. ` +
+                   `Format: Question|OptionA|OptionB|OptionC|OptionD|Correct`;
 
     try {
-        const encodedExpr = encodeURIComponent(expression);
-        const response = await axios.get(`http://api.mathjs.org/v4/?expr=${encodedExpr}`);
-        const correctAnswer = String(response.data);
+        const response = await axios.post(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+            {
+                contents: [
+                    {
+                        parts: [
+                            { text: prompt }
+                        ]
+                    }
+                ]
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-goog-api-key': GEMINI_API_KEY
+                }
+            }
+        );
 
-        const options = [correctAnswer];
-        const offsets = [-10, 10, 20, -20, 30, -30];
-        offsets.sort(() => Math.random() - 0.5);
-        for (let i = 0; i < 3; i++) {
-            options.push(String(Number(correctAnswer) + offsets[i]));
+        const responseText = response.data.candidates[0].content.parts[0].text.trim();
+        logger.debug(`Raw API response: ${responseText}`);
+
+        const parts = responseText.split('|');
+        if (parts.length !== 6 || parts.some(p => !p)) {
+            logger.error(`Invalid response format: ${responseText}`);
+            return {
+                question: "What is 300 + 200?",
+                options: ["400", "500", "600", "700"],
+                correct: "500"
+            };
         }
-        options.sort(() => Math.random() - 0.5);
 
+        const [question, a, b, c, d, correct] = parts;
         return {
-            question: questionText,
-            options,
-            correct: correctAnswer
+            question,
+            options: [a, b, c, d],
+            correct
         };
     } catch (error) {
         logger.error(`Error generating question: ${error.message}`);
