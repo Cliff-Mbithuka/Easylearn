@@ -119,7 +119,17 @@ async function main() {
 
 // Start server and CLI
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);
     main();
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        logger.error(`Port ${PORT} is already in use. Please stop the other process or use a different port.`);
+        process.exit(1);
+    } else {
+        logger.error(`Server error: ${err.message}`);
+        process.exit(1);
+    }
 });
